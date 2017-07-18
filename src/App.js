@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import 'bulma/css/bulma.css'
 import './App.css';
 
 class Environment extends Component {
@@ -148,20 +149,32 @@ class Environment extends Component {
   }
  
   render() {
-    // add a comment
     const styles = {
-      width: '400px'
-    }
+      width: '400px',
+      margin: '40px auto 20px auto',
+      display: 'block'
+    },
+    infoStyles = {
+      margin: '0 auto',
+      bgColor: 'blue',
+      display: 'block',
+      marginTop: '20px',
+      clear: 'both'
+    },
+    buttonClasses = 'button'
+
     return (
       <div>
-        <div style={styles}>
+        <div style={styles} className='clearfix'>
           {this.state.board.map((row, i) => { return row.map((col, j) => { return <Cell row={i} col={j} alive={col} toggle={this.toggle}/>; })}) }
         </div>
-        <button onClick={this.tick}>Tick</button>
-        <button onClick={this.startTimer}>Start</button>
-        <button onClick={this.stopTimer}>Stop</button>
-        <button onClick={this.clearBoard}>Clear</button>
-        <h1>Generation: {this.state.generation}</h1>
+        <div style={infoStyles}>
+          <button className={buttonClasses} onClick={this.tick}>Tick</button>
+          <button className={buttonClasses} onClick={this.startTimer}>Start</button>
+          <button className={buttonClasses} onClick={this.stopTimer}>Stop</button>
+          <button className={buttonClasses} onClick={this.clearBoard}>Clear</button>
+          <h1 className='title'>Generation: {this.state.generation}</h1>
+        </div>
       </div>
     );
   }
