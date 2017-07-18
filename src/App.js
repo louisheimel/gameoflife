@@ -148,6 +148,7 @@ class Environment extends Component {
   }
  
   render() {
+    // add a comment
     const styles = {
       width: '400px'
     }
