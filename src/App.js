@@ -211,6 +211,7 @@ class App extends Component {
     return (
       <div className="App">
         <Environment rows={20} cols={20} />
+        <a href="https://github.com/louisheimel/gameoflife">Code Repository</a>
       </div>
     );
   }
