@@ -6,9 +6,9 @@ class Environment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rows: this.props.rows,
-      cols: this.props.cols,
-      board: new Array(this.props.rows).fill(new Array(this.props.cols).fill(false)),
+      rows: this.props.cellLength,
+      cols: this.props.cellLength,
+      board: new Array(this.props.cellLength).fill(new Array(this.props.cellLength).fill(false)),
       generation: 0,
     }
     this.tick = this.tick.bind(this);
@@ -24,7 +24,7 @@ class Environment extends Component {
         this.setState({
           generation: this.state.generation + 1
         }, this.tick);
-      }, 100)
+      }, this.props.frequency)
     }
     this.setState({
       running: true
@@ -40,14 +40,12 @@ class Environment extends Component {
   clearBoard() {
     this.stopTimer()
     this.setState({
-      board: new Array(this.props.rows).fill(new Array(this.props.cols).fill(false)),
+      board: new Array(this.props.cellLength).fill(new Array(this.props.cellLength).fill(false)),
       generation: 0,
     })
   }
 
-  tick() {
-    const board = this.state.board;
-
+  getNextBoard(board) {
     function aboveRow(i) {
       if (i === 0) {
         return board.length - 1;
@@ -128,15 +126,18 @@ class Environment extends Component {
       }
     }
 
+    return board.map((row, i) => {
+             return row.map((col, j) => {
+               return cellAlive(col, i, j);
+             })
+           })
+  }
+  tick() {
     this.setState({
-      board: this.state.board.map((row, i) => {
-        return row.map((col, j) => {
-          return cellAlive(col, i, j);
-        })
-      }),
-      generation: this.state.generation + 1,
+      board: this.getNextBoard(this.state.board),
     })
   }
+
 
   toggle(m, n) {
     this.setState({
@@ -150,7 +151,8 @@ class Environment extends Component {
  
   render() {
     const styles = {
-      width: '400px',
+      width: this.props.boardWidth + 'px',
+      height: this.props.boardWidth + 'px',
       margin: '40px auto 20px auto',
       display: 'block'
     },
@@ -166,7 +168,7 @@ class Environment extends Component {
     return (
       <div>
         <div style={styles} className='clearfix'>
-          {this.state.board.map((row, i) => { return row.map((col, j) => { return <Cell row={i} col={j} alive={col} toggle={this.toggle}/>; })}) }
+          {this.state.board.map((row, i) => { return row.map((col, j) => { return <Cell boardWidth={this.props.boardWidth} length={this.props.boardWidth / this.props.cellLength} row={i} col={j} alive={col} toggle={this.toggle}/>; })}) }
         </div>
         <div style={infoStyles}>
           <button className={buttonClasses} onClick={this.tick}>Tick</button>
@@ -192,9 +194,9 @@ class Cell extends Component {
 
   render() {
     const styles = {
-      width: '20px',
-      height: '20px',
-      border: '1px solid black',
+      width: this.props.length + 'px',
+      height: this.props.length + 'px',
+      border: Math.sqrt(this.props.boardWidth) / this.props.length + 'px solid black',
       boxSizing: 'border-box',
       float: 'left',
       backgroundColor: this.props.alive ? 'black' : '#ffffff'
@@ -210,7 +212,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Environment rows={20} cols={20} />
+        <Environment cellLength={20} boardWidth={400} frequency={100}/>
       </div>
     );
   }
